@@ -1,11 +1,10 @@
 #!/usr/bin/python
 
 import urllib3, sys, argparse, json, datetime, time, curses, signal
-# from pprint import pprint
 
 http = urllib3.PoolManager()
 
-ver = "0.3"
+ver = "0.4"
 
 # The UpTime Robot API key can be found under "My Settings" page
 key = "YOUR_API_KEY"
@@ -136,28 +135,14 @@ def main(argv):
 
         stdscr = curses.initscr()
         curses.curs_set(0)
-        stdscr.clear()
-        stdscr.refresh()
 
-        sys.stdout.write(msg['101'] + '\n\r')
-        monitorsData = api.getMonitors()
-        if monitorsData :
-            output.rawdata = monitorsData
-            output.printMonitors()
-        else :
-            curses.endwin()
-            print msg['301']
-            sys.exit(2)
-
-        timeLeft = sleepTime
+        timeLeft = 0
         while True:
             if timeLeft == 0 :
                 monitorsData = api.getMonitors()
                 if monitorsData :
                     stdscr.clear()
                     stdscr.refresh()
-                    # curses.flash()
-
                     sys.stdout.write(msg['101'] + '\n\r')
                     output.rawdata = monitorsData
                     output.printMonitors()
@@ -172,6 +157,7 @@ def main(argv):
                 sys.stdout.flush()
                 timeLeft = timeLeft - 1
             time.sleep(1)
+
     else :
         api = APIHandler()
         monitorsData = api.getMonitors()
